@@ -1,5 +1,4 @@
-name: AuthCore CI
-
+name: AuthBridge CI
 on:
   push:
     branches: [main]

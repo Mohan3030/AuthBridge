@@ -1,5 +1,5 @@
 {
-  "name": "authcore",
+  "name": "authbridge",
   "version": "1.0.0",
   "description": "A reusable, database-independent authentication library for Node.js applications",
   "type": "module",
