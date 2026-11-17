@@ -67,4 +67,27 @@ describe('Configuration Validator', () => {
       'audience must be a non-empty string or array of strings'
     );
   });
+  it('should reject an array as configuration', () => {
+    expect(() => validateConfig([])).toThrow('AuthBridge configuration is required');
+  });
+
+  it('should reject an array as userRepository', () => {
+    const config = {
+      ...validConfig,
+      userRepository: [],
+    };
+
+    expect(() => validateConfig(config)).toThrow('A valid userRepository must be provided');
+  });
+
+  it('should reject a whitespace-only JWT secret', () => {
+    const config = {
+      ...validConfig,
+      jwtSecret: '                                ',
+    };
+
+    expect(() => validateConfig(config)).toThrow(
+      'JWT secret must be a string of at least 32 characters'
+    );
+  });
 });

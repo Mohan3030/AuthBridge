@@ -1,12 +1,13 @@
 import { SignJWT } from 'jose';
+
 export function validateConfig(config) {
-  if (!config || typeof config !== 'object') {
+  if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new TypeError('AuthBridge configuration is required');
   }
 
   const { userRepository, jwtSecret, tokenExpiry, issuer, audience } = config;
 
-  if (!userRepository || typeof userRepository !== 'object') {
+  if (!userRepository || typeof userRepository !== 'object' || Array.isArray(userRepository)) {
     throw new TypeError('A valid userRepository must be provided');
   }
 
@@ -18,7 +19,7 @@ export function validateConfig(config) {
     }
   }
 
-  if (typeof jwtSecret !== 'string' || jwtSecret.length < 32) {
+  if (typeof jwtSecret !== 'string' || jwtSecret.trim().length < 32) {
     throw new TypeError('JWT secret must be a string of at least 32 characters');
   }
 
