@@ -117,7 +117,30 @@ describe('Login Input Validation', () => {
       )
     ).rejects.toBeInstanceOf(AuthenticationError);
   });
+  it('should propagate an error when the stored password hash is malformed', async () => {
+    const userRepository = {
+      findByEmail: vi.fn().mockResolvedValue({
+        id: 'user-123',
+        passwordHash: 'not-a-valid-argon2-hash',
+        roles: ['user'],
+      }),
+    };
 
+    const config = {
+      jwtSecret: 'test-only-secret-with-at-least-32-characters',
+    };
+
+    await expect(
+      loginUser(
+        {
+          email: 'mohan@example.com',
+          password: 'MyPassword123!',
+        },
+        userRepository,
+        config
+      )
+    ).rejects.toThrow();
+  });
   it('should reject an unknown email', async () => {
     const userRepository = {
       findByEmail: vi.fn().mockResolvedValue(null),
