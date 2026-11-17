@@ -109,4 +109,21 @@ describe('Authorization Middleware', () => {
 
     expect(() => authorize('admin', '')).toThrow('At least one valid role must be provided');
   });
+  it('should reject users when roles is not an array', () => {
+    const authorize = createAuthorizeMiddleware();
+    const middleware = authorize('admin');
+
+    const req = {
+      user: {
+        id: 'user-123',
+        roles: 'admin',
+      },
+    };
+
+    const next = vi.fn();
+
+    middleware(req, {}, next);
+
+    expect(next).toHaveBeenCalledWith(expect.any(AuthorizationError));
+  });
 });

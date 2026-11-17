@@ -173,4 +173,35 @@ describe('Authentication Middleware', () => {
     expect(next).toHaveBeenCalledWith(databaseError);
     expect(next.mock.calls[0][0]).not.toBeInstanceOf(AuthenticationError);
   });
+  it('should use the latest roles from the repository instead of JWT roles', async () => {
+    const userRepository = {
+      findById: vi.fn().mockResolvedValue({
+        id: 'user-123',
+        name: 'Mohan',
+        email: 'mohan@example.com',
+        roles: ['user'],
+      }),
+    };
+
+    const verifyToken = vi.fn().mockResolvedValue({
+      sub: 'user-123',
+      roles: ['user', 'admin'],
+    });
+
+    const authenticate = createAuthenticateMiddleware(userRepository, verifyToken);
+
+    const req = {
+      headers: {
+        authorization: 'Bearer valid-token',
+      },
+    };
+
+    const next = vi.fn();
+
+    await authenticate(req, {}, next);
+
+    expect(req.user.roles).toEqual(['user']);
+    expect(req.user.roles).not.toContain('admin');
+    expect(next).toHaveBeenCalledWith();
+  });
 });
