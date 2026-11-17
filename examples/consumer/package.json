@@ -1,0 +1,14 @@
+{
+  "name": "authbridge-consumer-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "authbridge": "file:../..",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0"
+  }
+}
