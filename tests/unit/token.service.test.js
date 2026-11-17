@@ -136,4 +136,25 @@ describe('Token Service', () => {
   it('should reject an empty token', async () => {
     await expect(verifyToken('', TEST_CONFIG)).rejects.toThrow('Token must be a non-empty string');
   });
+  it('should reject a whitespace-only secret during token generation', async () => {
+    const config = {
+      ...TEST_CONFIG,
+      jwtSecret: '                                ',
+    };
+
+    await expect(generateToken(TEST_USER, config)).rejects.toThrow(
+      'JWT secret must be a string of at least 32 characters'
+    );
+  });
+
+  it('should reject a whitespace-only secret during token verification', async () => {
+    const config = {
+      ...TEST_CONFIG,
+      jwtSecret: '                                ',
+    };
+
+    await expect(verifyToken('some-token', config)).rejects.toThrow(
+      'JWT secret must be a string of at least 32 characters'
+    );
+  });
 });

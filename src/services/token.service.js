@@ -3,7 +3,7 @@ const DEFAULT_ISSUER = 'authbridge';
 const DEFAULT_TOKEN_EXPIRY = '15m';
 
 function validateTokenInputs(user, config) {
-  if (!config || typeof config.jwtSecret !== 'string' || config.jwtSecret.length < 32) {
+  if (!config || typeof config.jwtSecret !== 'string' || config.jwtSecret.trim().length < 32) {
     throw new TypeError('JWT secret must be a string of at least 32 characters');
   }
 
@@ -46,7 +46,7 @@ export async function verifyToken(token, config) {
     throw new TypeError('Token must be a non-empty string');
   }
 
-  if (!config || typeof config.jwtSecret !== 'string' || config.jwtSecret.length < 32) {
+  if (!config || typeof config.jwtSecret !== 'string' || config.jwtSecret.trim().length < 32) {
     throw new TypeError('JWT secret must be a string of at least 32 characters');
   }
 
