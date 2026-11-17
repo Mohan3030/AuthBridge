@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { jwtVerify } from 'jose';
+import { jwtVerify, SignJWT } from 'jose';
 import { generateToken, verifyToken } from '../../src/services/token.service.js';
 const TEST_SECRET = 'test-only-secret-with-at-least-32-characters';
 
@@ -121,7 +121,18 @@ describe('Token Service', () => {
 
     await expect(verifyToken(token, expiredConfig)).rejects.toThrow();
   });
+  it('should reject a token without an expiration claim', async () => {
+    const token = await new SignJWT({
+      roles: ['user'],
+    })
+      .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
+      .setSubject('user-123')
+      .setIssuer('authbridge')
+      .setIssuedAt()
+      .sign(secretKey);
 
+    await expect(verifyToken(token, TEST_CONFIG)).rejects.toThrow();
+  });
   it('should reject an empty token', async () => {
     await expect(verifyToken('', TEST_CONFIG)).rejects.toThrow('Token must be a non-empty string');
   });

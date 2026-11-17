@@ -62,7 +62,9 @@ export async function verifyToken(token, config) {
   }
 
   const { payload } = await jwtVerify(token, secretKey, verificationOptions);
-
+  if (typeof payload.exp !== 'number' || !Number.isFinite(payload.exp)) {
+    throw new Error('Token must include a valid expiration claim');
+  }
   if (
     typeof payload.sub !== 'string' ||
     payload.sub.trim() === '' ||
