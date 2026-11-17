@@ -49,7 +49,14 @@ describe('Configuration Validator', () => {
 
     expect(() => validateConfig(config)).toThrow('tokenExpiry must be a non-empty string');
   });
+  it('should reject an invalid token expiry format', () => {
+    const config = {
+      ...validConfig,
+      tokenExpiry: 'invalid-value',
+    };
 
+    expect(() => validateConfig(config)).toThrow('tokenExpiry must be a valid duration string');
+  });
   it('should reject an invalid audience', () => {
     const config = {
       ...validConfig,

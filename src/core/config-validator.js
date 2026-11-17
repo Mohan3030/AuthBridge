@@ -1,3 +1,4 @@
+import { SignJWT } from 'jose';
 export function validateConfig(config) {
   if (!config || typeof config !== 'object') {
     throw new TypeError('AuthBridge configuration is required');
@@ -21,8 +22,16 @@ export function validateConfig(config) {
     throw new TypeError('JWT secret must be a string of at least 32 characters');
   }
 
-  if (tokenExpiry !== undefined && (typeof tokenExpiry !== 'string' || tokenExpiry.trim() === '')) {
-    throw new TypeError('tokenExpiry must be a non-empty string');
+  if (tokenExpiry !== undefined) {
+    if (typeof tokenExpiry !== 'string' || tokenExpiry.trim() === '') {
+      throw new TypeError('tokenExpiry must be a non-empty string');
+    }
+
+    try {
+      new SignJWT({}).setExpirationTime(tokenExpiry);
+    } catch {
+      throw new TypeError('tokenExpiry must be a valid duration string');
+    }
   }
 
   if (issuer !== undefined && (typeof issuer !== 'string' || issuer.trim() === '')) {
