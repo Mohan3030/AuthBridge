@@ -121,4 +121,26 @@ describe('Registration Input Validation', () => {
 
     expect(userRepository.createUser).not.toHaveBeenCalled();
   });
+  it('should propagate a database duplicate-key conflict', async () => {
+    const databaseConflict = new ConflictError('An account with this email already exists');
+
+    const userRepository = {
+      findByEmail: vi.fn().mockResolvedValue(null),
+      createUser: vi.fn().mockRejectedValue(databaseConflict),
+      findById: vi.fn(),
+    };
+
+    await expect(
+      registerUser(
+        {
+          name: 'Mohan',
+          email: 'mohan@example.com',
+          password: 'MyPassword123!',
+        },
+        userRepository
+      )
+    ).rejects.toBe(databaseConflict);
+
+    expect(userRepository.createUser).toHaveBeenCalledOnce();
+  });
 });
