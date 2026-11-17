@@ -10,7 +10,11 @@ describe('Password Service', () => {
     expect(hash).toMatch(/^\$argon2id\$/);
     expect(hash).not.toBe(password);
   });
+  it('should use the configured Argon2id security parameters', async () => {
+    const hash = await hashPassword('MyPassword123!');
 
+    expect(hash).toContain('$argon2id$v=19$m=19456,t=2,p=1$');
+  });
   it('should verify the correct password', async () => {
     const password = 'MyPassword123!';
     const hash = await hashPassword(password);

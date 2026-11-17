@@ -19,14 +19,10 @@ function validatePassword(password) {
   }
 }
 
-export async function hashPassword(password, options = {}) {
+export async function hashPassword(password) {
   validatePassword(password);
 
-  return argon2.hash(password, {
-    ...DEFAULT_OPTIONS,
-    ...options,
-    type: argon2.argon2id,
-  });
+  return argon2.hash(password, DEFAULT_OPTIONS);
 }
 
 export async function verifyPassword(password, hash) {
